@@ -1,10 +1,18 @@
 #!/usr/bin/python3
 def print_matrix_integer(matrix=[[]]):
-    # Iterate over the rows of the matrix
+    """
+    Prints a matrix of integers.
+
+    Args:
+        matrix (list): A list of lists containing integers.
+
+    Returns:
+        None
+    """
     for row in matrix:
-        # Iterate over the elements of the row
-        for element in row:
-            # Print the element followed by a space
-            print("{:d}".format(element), end=" ")
-        # Print a new line
+        for i in range(len(row)):
+            if i != len(row) - 1:
+                print("{:d}".format(row[i]), end=" ")
+            else:
+                print("{:d}".format(row[i]), end="")
         print()
