@@ -1,20 +1,27 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <wchar.h>
+#include <locale.h>
 #include <Python.h>
+#include <unicodeobject.h>
 
-void print_python_string(PyObject *p) {
-	Py_ssize_t length;
-	Py_UNICODE *value;
+/**
+ * print_python_string - prints information about Python strings
+ * @p: address of PyObject struct representing the string
+ */
 
-	printf("[.] string object info\n");
-
-	if (!PyUnicode_Check(p)) {
-		printf("  [ERROR] Invalid String Object\n");
+void print_python_string(PyObject *p)
+{
+	wprintf(L"[.] string object info\n");
+	if (strcmp(p->ob_type->tp_name, "str"))
+	{
+		wprintf(L"  [ERROR] Invalid String Object\n");
 		return;
 	}
-
-	length = PyUnicode_GET_LENGTH(p);
-	value = PyUnicode_AsUnicode(p);
-
-	printf("  type: %s\n", PyUnicode_IS_COMPACT_ASCII(p) ? "compact ascii" : "compact unicode object");
-	printf("  length: %ld\n", length);
-	printf("  value: %ls\n", value);
+	if (PyUnicode_IS_COMPACT_ASCII(p))
+		wprintf(L"  type: compact ascii\n");
+	else
+		wprintf(L"  type: compact unicode object\n");
+	wprintf(L"  length: %lu\n", PyUnicode_GET_LENGTH(p));
+	wprintf(L"  value: %ls\n", PyUnicode_AS_UNICODE(p));
 }
