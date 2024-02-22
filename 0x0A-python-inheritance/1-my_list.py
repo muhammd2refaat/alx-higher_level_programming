@@ -1,21 +1,16 @@
 #!/usr/bin/python3
-"""available attributes"""
+"""Defines a class MyList that inherits from list"""
 
 
 class MyList(list):
-    """A custom list class that inherits from the built-in list class."""
+    """Class that inherits from list.
+
+    Args:
+        list (list): list to sort in ascending order.
+    """
     def print_sorted(self):
+        """Prints a list in ascending order.
         """
-        Print the list elements in sorted order.
-
-        Prints the list in ascending order using the sorted() function.
-
-        Args:
-            None
-
-        Returns:
-            None
-        """
-        my_list = sorted(self)
-        if my_list:
-            print(my_list)
+        list_ = self[:]
+        list_.sort()
+        print(list_)
