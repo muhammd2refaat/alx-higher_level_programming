@@ -1,96 +1,78 @@
 #include <Python.h>
-#include <stdio.h>
-#include <string.h>
-/**
- * print_python_bytes - adds a new node at the end of a listint_t list
- * @p: pointer PyObject
- * Return: void
- * setbuf(stdout, NULL);
- */
+#include <object.h>
+#include <listobject.h>
+#include <bytesobject.h>
+#include <floatobject.h>
+#include <stdlib.h>
+#include <float.h>
+
+void print_python_float(PyObject *p)
+{
+	PyFloatObject *f = (PyFloatObject *)p;
+	double d = f->ob_fval;
+	char *str = NULL;
+
+	printf("[.] float object info\n");
+	if (!PyFloat_Check(f))
+	{
+		printf("  [ERROR] Invalid Float Object\n");
+		return;
+	}
+	
+	str = PyOS_double_to_string(d, 'r', 0, Py_DTSF_ADD_DOT_0, NULL);
+	printf("  value: %s\n", str);
+}
+
 void print_python_bytes(PyObject *p)
 {
-	Py_ssize_t size = 0, i = 0;
-	char *string = NULL;
+	long unsigned int size;
+	unsigned int i;
+	char *trying_str = NULL;
 
 	printf("[.] bytes object info\n");
-
-	if (!PyBytes_CheckExact(p))
+	if (!PyBytes_Check(p))
 	{
 		printf("  [ERROR] Invalid Bytes Object\n");
 		return;
 	}
 
-	string = PyBytes_AS_STRING(p);
-	if (string != NULL)
-	{
-		size = strlen(string);
-		printf("  size: %zd\n", size);
-		printf("  trying string: %s\n", string);
-		printf("  first %zd bytes:", size < 10 ? size + 1 : 10);
-		while (i < size + 1 && i < 10)
-		{
-			printf(" %02hhx", string[i]);
-			i++;
-		}
-		printf("\n");
-		setbuf(stdout, NULL);
-	}
+	size = ((PyVarObject *)p)->ob_size;
+	trying_str = ((PyBytesObject *)p)->ob_sval;
+	printf("  size: %lu\n", size);
+	printf("  trying string: %s\n", trying_str);
+	if (size < 10)
+		printf("  first %lu bytes:", size + 1);
+	else
+		printf("  first 10 bytes:");
+	for (i = 0; i <= size && i < 10; i++)
+		printf(" %02hhx", trying_str[i]);
+	printf("\n");
 }
-/**
- * print_python_list - adds a new node at the end of a listint_t list
- * @p: pointer PyObject
- * Return: void
- * setbuf(stdout, NULL);
- * Description: adds a new node at the end of a listint_t list
- */
+
 void print_python_list(PyObject *p)
 {
-	Py_ssize_t size = 0;
-	PyObject *item;
-	int i = 0;
+	long unsigned int size;
+	unsigned int i;
+	PyListObject *list = (PyListObject *)p;
+	const char *type;
 
-	if (PyList_CheckExact(p))
+	printf("[*] Python list info\n");
+	if (!PyList_Check(list))
 	{
-		size = PyList_GET_SIZE(p);
-
-		printf("[*] Python list info\n");
-		printf("[*] Size of the Python List = %zd\n", size);
-		printf("[*] Allocated = %lu\n", ((PyListObject *)p)->allocated);
-		setbuf(stdout, NULL);
-		while (i < size)
-		{
-			item = PyList_GET_ITEM(p, i);
-			printf("Element %d: %s\n", i, item->ob_type->tp_name);
-			if (PyBytes_Check(item))
-				print_python_bytes(item);
-			i++;
-		}
-	}
-}
-
-
-/**
- * print_python_float - adds a new node at the end of a listint_t list
- * @p: pointer PyObject
- */
-void print_python_float(PyObject *p)
-{
-	double value;
-	char *nf;
-
-	setbuf(stdout, NULL);
-	printf("[.] float object info\n");
-
-	if (!PyFloat_Check(p))
-	{
-		printf("  [ERROR] Invalid Float Object\n");
-		setbuf(stdout, NULL);
+		printf("  [ERROR] Invalid List Object\n");
 		return;
 	}
 
-	value = ((PyFloatObject *)(p))->ob_fval;
-	nf = PyOS_double_to_string(value, 'r', 0, Py_DTSF_ADD_DOT_0, Py_DTST_FINITE);
-
-	printf("  value: %s\n", nf);
-	setbuf(stdout, NULL);
+	size = ((PyVarObject *)p)->ob_size;
+	printf("[*] Size of the Python List = %lu\n", size);
+	printf("[*] Allocated = %lu\n", list->allocated);
+	for (i = 0; i < size; i++)
+	{
+		type = (list->ob_item[i])->ob_type->tp_name;
+		printf("Element %i: %s\n", i, type);
+		if (!strcmp(type, "bytes"))
+			print_python_bytes(list->ob_item[i]);
+		if (!strcmp(type, "float"))
+			print_python_float(list->ob_item[i]);
+	}
 }
