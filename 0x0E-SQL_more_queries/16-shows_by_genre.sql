@@ -1,6 +1,5 @@
 -- 16. List shows and genres
 -- lists all shows contained in the database hbtn_0d_tvshows
-
 SELECT tv_shows.title, tv_genres.name
 FROM tv_shows
 LEFT JOIN tv_show_genres
