@@ -2,6 +2,10 @@
 
 x = 'C is fun';
 
-for (let i = 0; i < process.argv[2]; i++) {
-  console.log(x);
+if (process.argv[2] === undefined) {
+  console.log('Missing number of occurrences');
+} else {
+  for (let i = 0; i < process.argv[2]; i++) {
+    console.log(x);
+  }
 }
