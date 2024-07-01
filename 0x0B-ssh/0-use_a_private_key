@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 # Connects to server 100.25.221.149 with key in ~/.ssh/school and displays the message "You're a student now!"
 
-ssh -i ~/.ssh/school ubuntu@100.25.221.149
+server="52.86.159.169"
+
+ssh -i ~/.ssh/school ubuntu@$server
