@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-# Connects to server using private key
-
-server="52.86.159.169"
-ssh -i ~/.ssh/school ubuntu@$server
