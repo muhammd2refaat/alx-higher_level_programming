@@ -1,7 +1,8 @@
 #!/usr/bin/node
-// isNaN() is used to check if the argument is a number
-if (isNaN(process.argv[2] || process.argv[2] === undefined)) {
+const args = parseInt(process.argv[2], 10);
+
+if (isNaN(args)) {
   console.log('Not a number');
-} else { // parseInt() is used to convert the argument to an integer
-  console.log('My number: ' + parseInt(process.argv[2]));
+} else {
+  console.log('My number:', args);
 }
